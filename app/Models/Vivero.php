@@ -7,22 +7,39 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * Vivero
+ *
+ * Identificado por un código (asignado por el Productor) y debe poseer
+ * un nombre, departamento y municipio donde se encuentra.
+ *
+ * Relaciones:
+ *   - Pertenece a un Productor.
+ *   - Puede tener varias Labores.
+ */
 class Vivero extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'codigo',
-        'tipo_cultivo',
-        'finca_id'
+        'nombre',
+        'departamento',
+        'municipio',
+        'productor_id',
     ];
 
-    // Relación: Un vivero pertenece a una finca
-    public function finca(): BelongsTo
+    /**
+     * Un Vivero pertenece a un Productor.
+     */
+    public function productor(): BelongsTo
     {
-        return $this->belongsTo(Finca::class);
+        return $this->belongsTo(Productor::class);
     }
 
-    // Relación: Un vivero tiene muchas labores
+    /**
+     * Un Vivero tiene muchas Labores.
+     */
     public function labores(): HasMany
     {
         return $this->hasMany(Labor::class);

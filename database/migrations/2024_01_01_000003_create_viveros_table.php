@@ -6,17 +6,29 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Tabla de Viveros.
+     *
+     * Según los requisitos:
+     *   - Cada Vivero es identificado por un código (asignado por el Productor).
+     *   - El Vivero debe poseer un nombre, departamento y municipio.
+     *   - Cada Productor puede ser propietario de varios Viveros (relación directa).
+     */
     public function up(): void
     {
         Schema::create('viveros', function (Blueprint $table) {
             $table->id();
             $table->string('codigo')->comment('Código asignado por el productor');
-            $table->string('tipo_cultivo');
-            $table->foreignId('finca_id')->constrained()->onDelete('cascade');
+            $table->string('nombre');
+            $table->string('departamento');
+            $table->string('municipio');
+            $table->foreignId('productor_id')
+                  ->constrained('productores')
+                  ->cascadeOnDelete();
             $table->timestamps();
-            
-            // Un vivero debe tener un código único por finca
-            $table->unique(['codigo', 'finca_id']);
+
+            // Un Vivero debe tener un código único por Productor
+            $table->unique(['codigo', 'productor_id']);
         });
     }
 

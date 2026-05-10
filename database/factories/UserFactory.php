@@ -29,6 +29,7 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
+            'rol' => User::ROL_EMPLEADO,
             'remember_token' => Str::random(10),
         ];
     }
@@ -40,6 +41,26 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    /**
+     * Crear un usuario administrador.
+     */
+    public function administrador(): static
+    {
+        return $this->state(fn () => [
+            'rol' => User::ROL_ADMINISTRADOR,
+        ]);
+    }
+
+    /**
+     * Crear un usuario empleado.
+     */
+    public function empleado(): static
+    {
+        return $this->state(fn () => [
+            'rol' => User::ROL_EMPLEADO,
         ]);
     }
 }

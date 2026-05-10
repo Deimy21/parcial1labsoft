@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Finca;
+use App\Models\Productor;
 use App\Models\Vivero;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -14,11 +14,13 @@ class ViveroFactory extends Factory
     {
         return [
             'codigo'       => $this->faker->unique()->bothify('VIV-??###'),
-            'tipo_cultivo' => $this->faker->randomElement([
-                'Tomate', 'Pimiento', 'Lechuga', 'Fresa', 'Orquídea',
-                'Helecho', 'Cactus', 'Albahaca', 'Cilantro', 'Rosas',
+            'nombre'       => $this->faker->words(2, true),
+            'departamento' => $this->faker->randomElement([
+                'Risaralda', 'Antioquia', 'Cundinamarca', 'Valle del Cauca',
+                'Quindío', 'Caldas', 'Tolima', 'Huila', 'Santander', 'Boyacá',
             ]),
-            'finca_id' => Finca::factory(),
+            'municipio'    => $this->faker->city(),
+            'productor_id' => Productor::factory(),
         ];
     }
 }
