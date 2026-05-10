@@ -17,7 +17,6 @@
 
     @foreach([
         ['label'=>'Productores','val'=>$stats['productores'],'icon'=>'👨‍🌾','bg'=>'#e8f5e9','color'=>'#2e7d32','link'=>route('productores.index')],
-        ['label'=>'Fincas','val'=>$stats['fincas'],'icon'=>'🏡','bg'=>'#e3f2fd','color'=>'#1565c0','link'=>route('fincas.index')],
         ['label'=>'Viveros','val'=>$stats['viveros'],'icon'=>'🌱','bg'=>'#f3e5f5','color'=>'#6a1b9a','link'=>route('viveros.index')],
         ['label'=>'Labores','val'=>$stats['labores'],'icon'=>'📋','bg'=>'#fff3e0','color'=>'#e65100','link'=>route('labores.index')],
         ['label'=>'Productos Control','val'=>$stats['productos_control'],'icon'=>'⚗️','bg'=>'#fce4ec','color'=>'#880e4f','link'=>route('productos-control.index')],
