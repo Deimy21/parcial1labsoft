@@ -82,7 +82,7 @@
         .btn-primary:hover { background:var(--green-mid); }
         .btn-secondary { background:var(--green-light); color:var(--green-deep); border:1px solid var(--border); }
         .btn-secondary:hover { background:#d4edd9; }
-        .btn-danger { background:#fee2e2; color:var(--red-soft); }
+        .btn-danger { background: #f7c6d2; color:var(--red-soft); }
         .btn-danger:hover { background:#fecaca; }
         .btn-amber { background:var(--amber-light); color:var(--amber); }
         .btn-amber:hover { background:#fde68a; }
@@ -199,9 +199,30 @@
                 <span>/ @yield('topbar-subtitle')</span>
             @endif
         </div>
-        <div style="display:flex;gap:10px;">
-            @yield('topbar-actions')
+
+        <div style="display:flex; align-items:center; gap:12px;">
+
+            <div style="text-align:left;">
+                <div style="font-size:.85rem; font-weight:600;">
+                    {{ auth()->user()->name }}
+                </div>
+                <div style="font-size:.75rem; color:var(--text-muted);">
+                    {{ auth()->user()->email }}
+                </div>
+                <div style="font-size:.75rem; color:var(--text-muted);">
+                    {{ auth()->user()->rol}}
+                </div>
+            </div>
+
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button class="btn btn-danger btn-sm">
+                    Cerrar sesión
+                </button>
+            </form>
+
         </div>
+
     </header>
 
     <!-- Body -->
