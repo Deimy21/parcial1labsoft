@@ -99,23 +99,25 @@
 
         {{-- Quick actions --}}
         <div class="card">
-            <div class="card-header">
-                <h3 style="font-size:1.05rem;margin:0;">Accesos Rápidos</h3>
-            </div>
-            <div style="padding:16px;display:flex;flex-direction:column;gap:8px;">
-                <a href="{{ route('productores.create') }}" class="btn btn-secondary" style="justify-content:flex-start;">
-                    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-                    Nuevo Productor
-                </a>
-                <a href="{{ route('labores.create') }}" class="btn btn-secondary" style="justify-content:flex-start;">
-                    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-                    Nueva Labor
-                </a>
-                <a href="{{ route('productos-control.create') }}" class="btn btn-secondary" style="justify-content:flex-start;">
-                    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-                    Nuevo Producto Control
-                </a>
-            </div>
+            @if(auth()->user()->rol == 'administrador')
+                <div class="card-header">
+                    <h3 style="font-size:1.05rem;margin:0;">Accesos Rápidos</h3>
+                </div>
+                <div style="padding:16px;display:flex;flex-direction:column;gap:8px;">
+                    <a href="{{ route('productores.create') }}" class="btn btn-secondary" style="justify-content:flex-start;">
+                        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+                        Nuevo Productor
+                    </a>
+                    <a href="{{ route('labores.create') }}" class="btn btn-secondary" style="justify-content:flex-start;">
+                        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+                        Nueva Labor
+                    </a>
+                    <a href="{{ route('productos-control.create') }}" class="btn btn-secondary" style="justify-content:flex-start;">
+                        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+                        Nuevo Producto Control
+                    </a>
+                </div>
+            @endif
         </div>
     </div>
 </div>

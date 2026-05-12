@@ -38,12 +38,14 @@
                         {{ $f->productor->nombre }} {{ $f->productor->apellido }}
                     </td>
                     <td style="text-align:right;">
-                        <a href="{{ route('fincas.edit', $f) }}" class="btn btn-amber btn-sm">Editar</a>
-                        <button onclick="confirmDelete('{{ route('fincas.destroy', $f) }}', '¿Eliminar la finca {{ $f->numero_catastro }}? Se eliminarán sus viveros.')"
-                            class="btn btn-danger btn-sm">
-                            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3,6 5,6 21,6"/><path d="M19,6l-1,14a2,2,0,01-2,2H8a2,2,0,01-2-2L5,6"/></svg>
-                            Eliminar
-                        </button>
+                        @if(auth()->user()->rol == 'administrador')
+                            <a href="{{ route('fincas.edit', $f) }}" class="btn btn-amber btn-sm">Editar</a>
+                            <button onclick="confirmDelete('{{ route('fincas.destroy', $f) }}', '¿Eliminar la finca {{ $f->numero_catastro }}? Se eliminarán sus viveros.')"
+                                class="btn btn-danger btn-sm">
+                                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3,6 5,6 21,6"/><path d="M19,6l-1,14a2,2,0,01-2,2H8a2,2,0,01-2-2L5,6"/></svg>
+                                Eliminar
+                            </button>
+                        @endif
                     </td>
                 </tr>
                 @endforeach

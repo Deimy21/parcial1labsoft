@@ -15,7 +15,6 @@ class DashboardController extends Controller
     {
         $stats = [
             'productores'       => Productor::count(),
-            #'fincas'            => Finca::count(),
             'viveros'           => Vivero::count(),
             'labores'           => Labor::count(),
             'productos_control' => ProductoControl::count(),

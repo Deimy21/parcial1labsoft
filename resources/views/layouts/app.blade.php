@@ -193,29 +193,41 @@
 <div class="main-wrap">
     <!-- Topbar -->
     <header class="topbar">
+
         <div class="topbar-title">
             @yield('topbar-title', 'Dashboard')
+
             @hasSection('topbar-subtitle')
                 <span>/ @yield('topbar-subtitle')</span>
             @endif
         </div>
 
-        <div style="display:flex; align-items:center; gap:12px;">
+        <div style="display:flex; align-items:center; gap:16px;">
 
+            {{-- BOTONES DE CADA VISTA --}}
+            <div>
+                @yield('topbar-actions')
+            </div>
+
+            {{-- INFO USUARIO --}}
             <div style="text-align:left;">
                 <div style="font-size:.85rem; font-weight:600;">
                     {{ auth()->user()->name }}
                 </div>
+
                 <div style="font-size:.75rem; color:var(--text-muted);">
                     {{ auth()->user()->email }}
                 </div>
+
                 <div style="font-size:.75rem; color:var(--text-muted);">
-                    {{ auth()->user()->rol}}
+                    {{ auth()->user()->rol }}
                 </div>
             </div>
 
+            {{-- LOGOUT --}}
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
+
                 <button class="btn btn-danger btn-sm">
                     Cerrar sesión
                 </button>
@@ -224,7 +236,6 @@
         </div>
 
     </header>
-
     <!-- Body -->
     <main class="page-body">
         @if(session('success'))

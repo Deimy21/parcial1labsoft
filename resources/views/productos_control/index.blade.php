@@ -3,10 +3,12 @@
 @section('topbar-title', 'Productos de Control')
 @section('topbar-subtitle', 'Lista')
 @section('topbar-actions')
-    <a href="{{ route('productos-control.create') }}" class="btn btn-primary">
-        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-        Nuevo Producto
-    </a>
+    @if(auth()->user()->rol == 'administrador')
+        <a href="{{ route('productos-control.create') }}" class="btn btn-primary">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            Nuevo Producto
+        </a>
+    @endif
 @endsection
 
 @section('content')
@@ -94,15 +96,17 @@
                     </td>
                     <td>
                         <div style="display:flex;gap:6px;justify-content:flex-end;">
-                            <a href="{{ route('productos-control.edit', $pc) }}" class="btn btn-amber btn-sm">
-                                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                Editar
-                            </a>
-                            <button onclick="confirmDelete('{{ route('productos-control.destroy', $pc) }}', '¿Eliminar {{ $pc->nombre_producto }}?')"
-                                class="btn btn-danger btn-sm">
-                                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3,6 5,6 21,6"/><path d="M19,6l-1,14a2,2,0,01-2,2H8a2,2,0,01-2-2L5,6"/></svg>
-                                Eliminar
-                            </button>
+                            @if(auth()->user()->rol == 'administrador')
+                                <a href="{{ route('productos-control.edit', $pc) }}" class="btn btn-amber btn-sm">
+                                    <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                    Editar
+                                </a>
+                                <button onclick="confirmDelete('{{ route('productos-control.destroy', $pc) }}', '¿Eliminar {{ $pc->nombre_producto }}?')"
+                                    class="btn btn-danger btn-sm">
+                                    <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3,6 5,6 21,6"/><path d="M19,6l-1,14a2,2,0,01-2,2H8a2,2,0,01-2-2L5,6"/></svg>
+                                    Eliminar
+                                </button>
+                            @endif
                         </div>
                     </td>
                 </tr>

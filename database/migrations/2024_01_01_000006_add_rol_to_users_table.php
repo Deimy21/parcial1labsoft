@@ -18,9 +18,9 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->enum('rol', ['administrador', 'empleado'])
-                  ->default('empleado')
-                  ->after('password')
-                  ->comment('Rol del usuario en el sistema');
+                ->default('empleado')
+                ->after('password')
+                ->comment('Rol del usuario en el sistema');
         });
     }
 
