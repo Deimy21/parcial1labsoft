@@ -1,6 +1,6 @@
 # 🌱 Parcial Proyecto Vivero
 
-Sistema de administración de viveros desarrollado en Laravel que permite gestionar productores, fincas, viveros, labores y productos de control agrícola.
+Sistema de administración de viveros desarrollado en Laravel que permite gestionar productores, viveros, labores y productos de control agrícola.
 
 ---
 
@@ -15,32 +15,24 @@ Sistema de administración de viveros desarrollado en Laravel que permite gestio
 | **Luis Fernando Caicedo Caicedo**  |
 
 ---
-
-## 📊 Diagrama de Clases
-
-![Diagrama de Clases](https://github.com/Deimy21/parcial1labsoft/blob/master/public/diagrama%20de%20clases.jpeg)
-
----
-
 ## 📋 Descripción del Proyecto
 
 Sistema de administración de viveros que permite gestionar:
 
 - **Productores**: Personas propietarias de fincas (documento, nombre, apellido, teléfono, correo)
-- **Fincas**: Terrenos asociados a productores (número de catastro, municipio)
 - **Viveros**: Espacios de cultivo dentro de fincas (código, tipo de cultivo)
 - **Labores**: Actividades realizadas en viveros (fecha, descripción)
 - **Productos de Control**: Insumos agrícolas con herencia (STI):
   - **Hongo**: periodo_carencia, nombre_hongo
   - **Plaga**: periodo_carencia
   - **Fertilizante**: fecha_ultima_aplicacion
+- **User**: Dos tipos de usuarios para acceder a la aplicación (Administrador, Empleado)
 
 ---
 
 ### Relaciones Principales
 
 - **Productor** ↔ **Finca**: Uno a muchos (un productor puede tener varias fincas)
-- **Finca** ↔ **Vivero**: Uno a muchos (una finca puede alojar varios viveros)
 - **Vivero** ↔ **Labor**: Uno a muchos (en un vivero se realizan múltiples labores)
 - **Labor** ↔ **ProductoControl**: Muchos a uno (una labor emplea un producto de control)
 - **ProductoControl** (herencia): Hongo, Plaga y Fertilizante mediante STI
