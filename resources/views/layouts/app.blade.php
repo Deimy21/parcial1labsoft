@@ -168,10 +168,10 @@
             <a href="{{ route('productores.index') }}" class="nav-item {{ request()->routeIs('productores.*') ? 'active' : '' }}">
                 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
                 Productores
+            </a>
             <a href="{{ route('viveros.index') }}" class="nav-item {{ request()->routeIs('viveros.*') ? 'active' : '' }}">
                 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a10 10 0 00-10 10 10 10 0 0010 10 10 10 0 0010-10A10 10 0 0012 2z"/><path d="M12 6v6l4 2"/></svg>
                 Viveros
-            </a>
             </a>
             <a href="{{ route('labores.index') }}" class="nav-item {{ request()->routeIs('labores.*') ? 'active' : '' }}">
                 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
@@ -182,6 +182,16 @@
                 Productos de Control
             </a>
         </div>
+
+        {{-- ✅ NUEVO: Menú Reportes --}}
+        <div class="nav-section">
+            <div class="nav-label">Reportes</div>
+            <a href="{{ route('reportes.index') }}" class="nav-item {{ request()->routeIs('reportes.*') ? 'active' : '' }}">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 17v-2m3 2v-4m3 4v-6M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                Reportes
+            </a>
+        </div>
+
     </nav>
 
     <div style="padding:16px; border-top:1px solid rgba(255,255,255,.1);">

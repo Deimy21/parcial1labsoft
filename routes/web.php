@@ -6,6 +6,7 @@ use App\Http\Controllers\Web\LaborWebController;
 use App\Http\Controllers\Web\ProductoControlWebController;
 use App\Http\Controllers\Web\ProductorWebController;
 use App\Http\Controllers\Web\ViveroWebController;
+use App\Http\Controllers\Web\ReporteController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
@@ -60,20 +61,6 @@ Route::middleware(['auth'])->group(function () {
 
 
      /*
-//     |--------------------------------------------------------------------------
-//     | FINCAS (SOLO VER)
-//     |--------------------------------------------------------------------------
-//     */
-
-//      Route::get('fincas', [FincaWebController::class, 'index'])
-//           ->name('fincas.index');
-
-//      Route::get('fincas/{finca}', [FincaWebController::class, 'show'])
-//           ->name('fincas.show');
-
-
-//      
-     /*
     |--------------------------------------------------------------------------
     | VIVEROS (SOLO VER)
     |--------------------------------------------------------------------------
@@ -101,6 +88,40 @@ Route::middleware(['auth'])->group(function () {
 
      Route::get('productos-control', [ProductoControlWebController::class, 'index'])
           ->name('productos-control.index');
+
+
+     /*
+    |--------------------------------------------------------------------------
+    | REPORTES (ADMINISTRADOR Y EMPLEADO)
+    |--------------------------------------------------------------------------
+    */
+
+     Route::prefix('reportes')->name('reportes.')->group(function () {
+
+          Route::get('/', [ReporteController::class, 'index'])
+               ->name('index');
+
+          // Consulta A: Labores de un Vivero
+          Route::get('/labores-vivero', [ReporteController::class, 'laboresVivero'])
+               ->name('labores-vivero');
+
+          Route::get('/labores-vivero/{id}/pdf', [ReporteController::class, 'laboresViveroPdf'])
+               ->name('labores-vivero.pdf');
+
+          Route::get('/labores-vivero/{id}/excel', [ReporteController::class, 'laboresViveroExcel'])
+               ->name('labores-vivero.excel');
+
+          // Consulta B: Viveros de un Productor
+          Route::get('/viveros-productor', [ReporteController::class, 'viverosProductor'])
+               ->name('viveros-productor');
+
+          Route::get('/viveros-productor/{id}/pdf', [ReporteController::class, 'viverosProductorPdf'])
+               ->name('viveros-productor.pdf');
+
+          Route::get('/viveros-productor/{id}/excel', [ReporteController::class, 'viverosProductorExcel'])
+               ->name('viveros-productor.excel');
+     });
+
 });
 
 
@@ -133,30 +154,10 @@ Route::middleware(['auth', 'role:administrador'])->group(function () {
      Route::delete('productores/{productor}', [ProductorWebController::class, 'destroy'])
           ->name('productores.destroy');
 
-
-     /*
-    |--------------------------------------------------------------------------
-    | FINCAS
-    |--------------------------------------------------------------------------
-    */
-
-     // Route::get('fincas/create', [FincaWebController::class, 'create'])
-     //      ->name('fincas.create');
-
-     // Route::post('fincas', [FincaWebController::class, 'store'])
-     //      ->name('fincas.store');
-
-     // Route::get('fincas/{finca}/edit', [FincaWebController::class, 'edit'])
-     //      ->name('fincas.edit');
-
-     // Route::put('fincas/{finca}', [FincaWebController::class, 'update'])
-     //      ->name('fincas.update');
-
-     // Route::delete('fincas/{finca}', [FincaWebController::class, 'destroy'])
-     //      ->name('fincas.destroy');
-
      Route::get('productores/{productor}', [ProductorWebController::class, 'show'])
           ->name('productores.show');
+
+
      /*
     |--------------------------------------------------------------------------
     | VIVEROS
