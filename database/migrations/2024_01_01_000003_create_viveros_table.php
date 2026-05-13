@@ -23,8 +23,8 @@ return new class extends Migration
             $table->string('departamento');
             $table->string('municipio');
             $table->foreignId('productor_id')
-                  ->constrained('productores')
-                  ->cascadeOnDelete();
+                ->constrained('productores')
+                ->cascadeOnDelete();
             $table->timestamps();
 
             // Un Vivero debe tener un código único por Productor

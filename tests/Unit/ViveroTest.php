@@ -4,7 +4,6 @@ namespace Tests\Unit\Models;
 
 use Tests\TestCase;
 use App\Models\Vivero;
-use App\Models\Finca;
 use App\Models\Productor;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -17,45 +16,40 @@ class ViveroTest extends TestCase
      * 
      * 🎯 OBJETIVO:
      * Validar que podemos crear un vivero usando la misma estructura de datos
-     * que se maneja en el sistema (con código, tipo de cultivo y finca asociada).
+     * que se maneja en el sistema (con código, nombre, departamento, municipio y productor asociado).
      * Crea una instancia de Vivero sin guardar en BD.
      * 
-     * 📊 DATOS DEL SISTEMA (basado en los controladores y la interfaz):
-     * - Código: Identificador único del vivero dentro de una finca (VIV-rb075, VIV-zo328, VIV-bf953)
-     * - Tipo de cultivo: Helecho, Orquídea, Pimiento, Café, etc
-     * - finca_id: Relación con la finca donde se ubica el vivero
+     * 📊 DATOS DEL SISTEMA (basado en los controladores):
+     * - codigo: Código identificador único del vivero
+     * - nombre: Nombre del vivero
+     * - departamento: Departamento donde se ubica
+     * - municipio: Municipio donde se ubica
+     * - productor_id: Relación con el productor propietario
      */
     public function test_puede_crear_vivero_como_en_el_sistema()
     {
-        // Crear un productor
+        // Crear un productor similar a los que aparecen en el sistema
         $productor = Productor::factory()->create([
             'nombre' => 'Carlos',
             'apellido' => 'López',
             'correo' => 'carlos.lopez@email.com'
         ]);
 
-        // Crear una finca similar a las que aparecen en la interfaz
-        $finca = Finca::factory()->create([
-            'numero_catastro' => 'CATA-789-012',
-            'municipio' => 'Rionegro',
-            'productor_id' => $productor->id
-        ]);
-
-        // Crear vivero con datos similares a la interfaz
+        // Crear vivero con datos similares al sistema
         $vivero = new Vivero([
-            'codigo' => 'VIV-test-789', // Código similar a los mostrados (VIV-rb075, VIV-zo328)
-            'tipo_cultivo' => 'Café', // Tipo de cultivo como en la interfaz
-            'finca_id' => $finca->id // Relación con la finca
+            'codigo' => 'VIV-001',           // Código único del vivero
+            'nombre' => 'Vivero Central',    // Nombre del vivero
+            'departamento' => 'Antioquia',   // Departamento de ubicación
+            'municipio' => 'Medellín',       // Municipio de ubicación
+            'productor_id' => $productor->id // Relación con productor
         ]);
 
         $this->assertInstanceOf(Vivero::class, $vivero);
-        $this->assertEquals('VIV-test-789', $vivero->codigo);
-        $this->assertEquals('Café', $vivero->tipo_cultivo);
-        $this->assertEquals($finca->id, $vivero->finca_id);
-        
-        // Verificar formato del código (similar a los de la interfaz)
-        $this->assertStringStartsWith('VIV-', $vivero->codigo);
-        $this->assertEquals(12, strlen($vivero->codigo)); // VIV-test-789 = 12 caracteres
+        $this->assertEquals('VIV-001', $vivero->codigo);
+        $this->assertEquals('Vivero Central', $vivero->nombre);
+        $this->assertEquals('Antioquia', $vivero->departamento);
+        $this->assertEquals('Medellín', $vivero->municipio);
+        $this->assertEquals($productor->id, $vivero->productor_id);
     }
 
     /**
@@ -66,9 +60,11 @@ class ViveroTest extends TestCase
      * del formulario de creación/edición de viveros en la interfaz web.
      * 
      * 📋 FORMULARIO DE VIVEROS (según ViveroWebController):
-     * - Código (input text, required, unique por finca)
-     * - Tipo de cultivo (input text, required)
-     * - Finca (select con fincas, required)
+     * - Código (input text, required, unique)
+     * - Nombre (input text, required)
+     * - Departamento (input text, required)
+     * - Municipio (input text, required)
+     * - Productor ID (select con productores, required)
      */
     public function test_campos_fillable_coinciden_con_formulario()
     {
@@ -79,8 +75,10 @@ class ViveroTest extends TestCase
         // Estos son los campos que aparecen en el formulario de la interfaz
         $camposDelFormulario = [
             'codigo',        // Campo de código en la interfaz
-            'tipo_cultivo',  // Campo de tipo de cultivo
-            'finca_id'       // Select de fincas
+            'nombre',        // Campo de nombre del vivero
+            'departamento',  // Campo de departamento
+            'municipio',     // Campo de municipio
+            'productor_id'   // Select de productores
         ];
         
         foreach ($camposDelFormulario as $campo) {
@@ -88,7 +86,7 @@ class ViveroTest extends TestCase
                 "El campo '$campo' debería estar en fillable porque aparece en el formulario");
         }
         
-        $this->assertCount(3, $fillable, "Debe haber exactamente 3 campos fillable como en el formulario");
+        $this->assertCount(5, $fillable, "Debe haber exactamente 5 campos fillable como en el formulario");
         
         // Verificar que campos protegidos NO están en fillable
         $this->assertNotContains('id', $fillable);
@@ -105,43 +103,58 @@ class ViveroTest extends TestCase
      * 
      * 📋 VALIDACIONES EN CONTROLADORES:
      * - API: código único dentro de la misma finca
-     * - Web: código único por finca con mensaje personalizado
-     * - Ambos: tipo_cultivo string con máximo de caracteres
+     * - Web: código único global
+     * - Todos los campos son requeridos en Web
      */
     public function test_campos_tienen_formato_esperado()
     {
-        // Probar creación con diferentes formatos de código
+        // Probar creación con diferentes formatos de código y nombre
         $vivero1 = new Vivero([
-            'codigo' => 'VIV-abc-123', // Formato con letras y números
-            'tipo_cultivo' => 'Helecho',
-            'finca_id' => 1
+            'codigo' => 'VIV-ABC-123',     // Formato con letras y números
+            'nombre' => 'Vivero Norte',     // Nombre descriptivo
+            'departamento' => 'Cundinamarca',
+            'municipio' => 'Bogotá',
+            'productor_id' => 1
         ]);
 
         $vivero2 = new Vivero([
-            'codigo' => 'INV-987-xz', // Formato con prefijo diferente
-            'tipo_cultivo' => 'Orquídea',
-            'finca_id' => 2
+            'codigo' => 'VIV-987-XZ',       // Formato con prefijo diferente
+            'nombre' => 'Vivero Sur',       // Otro nombre
+            'departamento' => 'Valle del Cauca',
+            'municipio' => 'Cali',
+            'productor_id' => 2
         ]);
 
         $vivero3 = new Vivero([
-            'codigo' => 'VIV-001', // Formato simple
-            'tipo_cultivo' => 'Pimiento',
-            'finca_id' => 3
+            'codigo' => 'VIV-001',          // Formato simple
+            'nombre' => 'Vivero Oriente',
+            'departamento' => 'Santander',
+            'municipio' => 'Bucaramanga',
+            'productor_id' => 3
         ]);
 
         // Verificar que diferentes formatos de código son aceptados
-        $this->assertEquals('VIV-abc-123', $vivero1->codigo);
-        $this->assertEquals('INV-987-xz', $vivero2->codigo);
+        $this->assertEquals('VIV-ABC-123', $vivero1->codigo);
+        $this->assertEquals('VIV-987-XZ', $vivero2->codigo);
         $this->assertEquals('VIV-001', $vivero3->codigo);
         
-        // Verificar diferentes tipos de cultivo (como en la interfaz)
-        $this->assertEquals('Helecho', $vivero1->tipo_cultivo);
-        $this->assertEquals('Orquídea', $vivero2->tipo_cultivo);
-        $this->assertEquals('Pimiento', $vivero3->tipo_cultivo);
+        // Verificar nombres de viveros
+        $this->assertEquals('Vivero Norte', $vivero1->nombre);
+        $this->assertEquals('Vivero Sur', $vivero2->nombre);
+        $this->assertEquals('Vivero Oriente', $vivero3->nombre);
+        
+        // Verificar departamentos y municipios
+        $this->assertEquals('Cundinamarca', $vivero1->departamento);
+        $this->assertEquals('Bogotá', $vivero1->municipio);
+        $this->assertEquals('Valle del Cauca', $vivero2->departamento);
+        $this->assertEquals('Cali', $vivero2->municipio);
+        $this->assertEquals('Santander', $vivero3->departamento);
+        $this->assertEquals('Bucaramanga', $vivero3->municipio);
         
         // Verificar que los códigos mantienen su formato original
         $this->assertStringContainsString('VIV', $vivero1->codigo);
-        $this->assertStringContainsString('INV', $vivero2->codigo);
+        $this->assertStringContainsString('VIV', $vivero2->codigo);
+        $this->assertStringContainsString('VIV', $vivero3->codigo);
     }
 
     /**
@@ -151,22 +164,18 @@ class ViveroTest extends TestCase
      * Confirmar que la estructura de la tabla permite almacenar todos los
      * campos que se muestran en las vistas y se usan en los controladores.
      * 
-     * 📋 COLUMNAS EN LA BASE DE DATOS (según el modelo y la interfaz):
+     * 📋 COLUMNAS EN LA BASE DE DATOS (según el modelo):
      * - id (clave primaria)
-     * - codigo (único por finca)
-     * - tipo_cultivo
-     * - finca_id (clave foránea)
+     * - codigo (único)
+     * - nombre
+     * - departamento
+     * - municipio
+     * - productor_id (clave foránea)
      * - created_at, updated_at (timestamps)
      * 
      * 🔗 RELACIONES:
-     * - belongsTo: finca
-     * - hasMany: labores
-     * 
-     * 📊 DATOS DE INTERFAZ:
-     * En la lista de labores se muestra:
-     * - VIV-rb075 Helecho (código + tipo_cultivo)
-     * - VIV-zo328 Orquídea
-     * - VIV-bf953 Pimiento
+     * - belongsTo: productor
+     * - hasMany: labores (opcional)
      */
     public function test_tabla_viveros_contiene_campos_necesarios()
     {
@@ -178,15 +187,18 @@ class ViveroTest extends TestCase
         // Verificar que los campos principales existen en la tabla
         $this->assertTrue($vivero->getConnection()->getSchemaBuilder()->hasColumn('viveros', 'id'));
         $this->assertTrue($vivero->getConnection()->getSchemaBuilder()->hasColumn('viveros', 'codigo'));
-        $this->assertTrue($vivero->getConnection()->getSchemaBuilder()->hasColumn('viveros', 'tipo_cultivo'));
-        $this->assertTrue($vivero->getConnection()->getSchemaBuilder()->hasColumn('viveros', 'finca_id'));
+        $this->assertTrue($vivero->getConnection()->getSchemaBuilder()->hasColumn('viveros', 'nombre'));
+        $this->assertTrue($vivero->getConnection()->getSchemaBuilder()->hasColumn('viveros', 'departamento'));
+        $this->assertTrue($vivero->getConnection()->getSchemaBuilder()->hasColumn('viveros', 'municipio'));
+        $this->assertTrue($vivero->getConnection()->getSchemaBuilder()->hasColumn('viveros', 'productor_id'));
         $this->assertTrue($vivero->getConnection()->getSchemaBuilder()->hasColumn('viveros', 'created_at'));
         $this->assertTrue($vivero->getConnection()->getSchemaBuilder()->hasColumn('viveros', 'updated_at'));
         
         // Verificar lista de columnas
         $columns = $vivero->getConnection()->getSchemaBuilder()->getColumnListing('viveros');
         $columnasEsperadas = [
-            'id', 'codigo', 'tipo_cultivo', 'finca_id', 'created_at', 'updated_at'
+            'id', 'codigo', 'nombre', 'departamento', 
+            'municipio', 'productor_id', 'created_at', 'updated_at'
         ];
         
         foreach ($columnasEsperadas as $columna) {
@@ -194,27 +206,6 @@ class ViveroTest extends TestCase
         }
         
         // Verificar que la tabla tiene la clave foránea necesaria
-        $this->assertTrue($vivero->getConnection()->getSchemaBuilder()->hasColumn('viveros', 'finca_id'));
-    }
-
-    /**
-     * PRUEBA ADICIONAL (OPCIONAL): Verificar el formato de visualización en interfaz
-     * 
-     * Esta prueba verifica que podemos generar el formato de visualización
-     * que aparece en la interfaz: "VIV-rb075 Helecho" (código + tipo_cultivo)
-     */
-    public function test_puede_generar_formato_de_visualizacion_como_en_interfaz()
-    {
-        $vivero = new Vivero([
-            'codigo' => 'VIV-rb075',
-            'tipo_cultivo' => 'Helecho'
-        ]);
-        
-        // Formato mostrado en la interfaz: "VIV-rb075 Helecho"
-        $visualizacionInterfaz = $vivero->codigo . ' ' . $vivero->tipo_cultivo;
-        
-        $this->assertEquals('VIV-rb075 Helecho', $visualizacionInterfaz);
-        $this->assertStringContainsString($vivero->codigo, $visualizacionInterfaz);
-        $this->assertStringContainsString($vivero->tipo_cultivo, $visualizacionInterfaz);
+        $this->assertTrue($vivero->getConnection()->getSchemaBuilder()->hasColumn('viveros', 'productor_id'));
     }
 }

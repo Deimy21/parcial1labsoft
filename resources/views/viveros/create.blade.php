@@ -2,68 +2,83 @@
 
 @section('content')
 <div class="container">
+
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Nuevo Vivero</h1>
+        <h2>Nuevo Vivero</h2>
         <a href="{{ route('viveros.index') }}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Volver
+            Volver
         </a>
     </div>
 
-    <div class="card">
+    <div class="card shadow-sm">
         <div class="card-body">
+
             <form action="{{ route('viveros.store') }}" method="POST">
                 @csrf
-                
-                <div class="mb-3">
-                    <label for="finca_id" class="form-label">Finca *</label>
-                    <select name="finca_id" id="finca_id" class="form-select @error('finca_id') is-invalid @enderror" required>
-                        <option value="">Seleccione una finca</option>
-                        @foreach($fincas as $finca)
-                            <option value="{{ $finca->id }}" {{ old('finca_id') == $finca->id ? 'selected' : '' }}>
-                                {{ $finca->numero_catastro }} - {{ $finca->municipio }} ({{ $finca->productor->nombre }} {{ $finca->productor->apellido }})
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('finca_id')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
+
+                <div class="row">
+
+                    {{-- PRODUCTOR --}}
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Productor</label>
+                        <select name="productor_id" class="form-control" required>
+                            <option value="">Seleccione un productor</option>
+                            @foreach($productores as $productor)
+                                <option value="{{ $productor->id }}">
+                                    {{ $productor->nombre }} {{ $productor->apellido }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    {{-- CÓDIGO --}}
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Código del Vivero</label>
+                        <input type="text" name="codigo" class="form-control"
+                               placeholder="Ej: VIV-001"
+                               value="{{ old('codigo') }}" required>
+                    </div>
+
+                    {{-- NOMBRE --}}
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Nombre del Vivero</label>
+                        <input type="text" name="nombre" class="form-control"
+                               placeholder="Ej: Vivero Central"
+                               value="{{ old('nombre') }}" required>
+                    </div>
+
+                    {{-- DEPARTAMENTO --}}
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Departamento</label>
+                        <input type="text" name="departamento" class="form-control"
+                               placeholder="Ej: Risaralda"
+                               value="{{ old('departamento') }}" required>
+                    </div>
+
+                    {{-- MUNICIPIO --}}
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Municipio</label>
+                        <input type="text" name="municipio" class="form-control"
+                               placeholder="Ej: Santa Rosa"
+                               value="{{ old('municipio') }}" required>
+                    </div>
+
                 </div>
 
-                <div class="mb-3">
-                    <label for="codigo" class="form-label">Código del Vivero *</label>
-                    <input type="text" 
-                           class="form-control @error('codigo') is-invalid @enderror" 
-                           id="codigo" 
-                           name="codigo" 
-                           value="{{ old('codigo') }}"
-                           placeholder="Ej: VIV-001"
-                           required>
-                    <small class="text-muted">Código único asignado por el productor</small>
-                    @error('codigo')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
+                <div class="mt-4 d-flex justify-content-end gap-2">
+                    <button type="reset" class="btn btn-light">
+                        Limpiar
+                    </button>
+
+                    <button type="submit" class="btn btn-success">
+                        Guardar Vivero
+                    </button>
                 </div>
 
-                <div class="mb-3">
-                    <label for="tipo_cultivo" class="form-label">Tipo de Cultivo *</label>
-                    <input type="text" 
-                           class="form-control @error('tipo_cultivo') is-invalid @enderror" 
-                           id="tipo_cultivo" 
-                           name="tipo_cultivo" 
-                           value="{{ old('tipo_cultivo') }}"
-                           placeholder="Ej: Café, Tomate, Lechuga"
-                           required>
-                    @error('tipo_cultivo')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="text-end">
-                    <button type="reset" class="btn btn-secondary">Limpiar</button>
-                    <button type="submit" class="btn btn-primary">Guardar Vivero</button>
-                </div>
             </form>
+
         </div>
     </div>
+
 </div>
 @endsection

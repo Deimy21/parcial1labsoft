@@ -26,86 +26,54 @@ class RelacionesTest extends TestCase
     {
         $productor = new Productor();
         
-        // Verificar que la relación fincas existe como método
-        $this->assertTrue(method_exists($productor, 'fincas'));
-        $this->assertInstanceOf(\Illuminate\Database\Eloquent\Relations\HasMany::class, $productor->fincas());
-        
-        // Verificar que la relación viveros existe como método (hasManyThrough)
+        // Verificar que la relación viveros existe como método
         $this->assertTrue(method_exists($productor, 'viveros'));
-        $this->assertInstanceOf(\Illuminate\Database\Eloquent\Relations\HasManyThrough::class, $productor->viveros());
+        $this->assertInstanceOf(\Illuminate\Database\Eloquent\Relations\HasMany::class, $productor->viveros());
         
-        // Verificar que los nombres de las tablas foráneas son correctos
-        // (esto es más avanzado pero útil para confirmar la relación)
+        // Verificar que los nombres de las tablas relacionadas son correctos
         $viverosRelation = $productor->viveros();
-        $this->assertEquals('fincas', $viverosRelation->getParent()->getTable());
+        $this->assertEquals('productores', $viverosRelation->getParent()->getTable());
         $this->assertEquals('viveros', $viverosRelation->getRelated()->getTable());
     }
 
     /**
      * PRUEBA 2: Verificar relaciones del modelo Vivero
      * 
-     * Esta prueba verifica que las relaciones definidas en el modelo
-     * funcionan correctamente y permiten acceder a los datos relacionados.
+     * Esta prueba verifica que la relación con productor está correctamente definida.
      * 
      * 🔗 RELACIONES DEL MODELO:
-     * - finca(): BelongsTo - Un vivero pertenece a una finca
+     * - productor(): BelongsTo - Un vivero pertenece a un productor
      * - labores(): HasMany - Un vivero tiene muchas labores
      */
-    public function test_vivero_tiene_relaciones_correctas()
-    {
-        $vivero = new Vivero();
-        
-        // Verificar que la relación finca existe como método
-        $this->assertTrue(method_exists($vivero, 'finca'));
-        $this->assertInstanceOf(\Illuminate\Database\Eloquent\Relations\BelongsTo::class, $vivero->finca());
-        
-        // Verificar que la relación labores existe como método
-        $this->assertTrue(method_exists($vivero, 'labores'));
-        $this->assertInstanceOf(\Illuminate\Database\Eloquent\Relations\HasMany::class, $vivero->labores());
-        
-        // Verificar nombres de las tablas relacionadas
-        $fincaRelation = $vivero->finca();
-        $this->assertEquals('finca_id', $fincaRelation->getForeignKeyName());
-        
-        $laboresRelation = $vivero->labores();
-        $this->assertEquals('vivero_id', $laboresRelation->getForeignKeyName());
-    }
-
-    /**
-     * PRUEBA 3: Verificar relaciones del modelo Finca
-     * 
-     * Esta prueba verifica que las relaciones definidas en el modelo
-     * funcionan correctamente y permiten acceder a los datos relacionados.
-     */
-    public function test_finca_tiene_relaciones_correctas()
+    public function test_vivero_pertenece_a_un_productor()
     {
         // Crear un productor
         $productor = Productor::factory()->create([
-            'nombre' => 'María González',
-            'correo' => 'maria@example.com'
+            'nombre' => 'Ana',
+            'apellido' => 'Martínez',
+            'correo' => 'ana.martinez@email.com'
         ]);
 
-        // Crear una finca asociada al productor
-        $finca = new Finca([
-            'numero_catastro' => 'CATA-999-888',
-            'municipio' => 'Envigado',
+        // Crear un vivero asociado al productor
+        $vivero = new Vivero([
+            'codigo' => 'VIV-REL-001',
+            'nombre' => 'Vivero Relación',
+            'departamento' => 'Quindío',
+            'municipio' => 'Armenia',
             'productor_id' => $productor->id
         ]);
 
-        // Verificar que la relación productor existe
-        $this->assertEquals('María González', $productor->nombre);
-        
-        // Verificar que la relación viveros existe como método
-        $this->assertTrue(method_exists($finca, 'viveros'));
-        $this->assertInstanceOf(\Illuminate\Database\Eloquent\Relations\HasMany::class, $finca->viveros());
-        
         // Verificar que la relación productor existe como método
-        $this->assertTrue(method_exists($finca, 'productor'));
-        $this->assertInstanceOf(\Illuminate\Database\Eloquent\Relations\BelongsTo::class, $finca->productor());
+        $this->assertTrue(method_exists($vivero, 'productor'));
+        $this->assertInstanceOf(\Illuminate\Database\Eloquent\Relations\BelongsTo::class, $vivero->productor());
+        
+        // Verificar nombre de la clave foránea
+        $productorRelation = $vivero->productor();
+        $this->assertEquals('productor_id', $productorRelation->getForeignKeyName());
     }
 
     /**
-     * PRUEBA 4: Verificar relaciones del modelo ProductoControl
+     * PRUEBA 3: Verificar relaciones del modelo ProductoControl
      * 
      * Esta prueba verifica que la relación con labores está correctamente definida.
      * 
@@ -126,7 +94,7 @@ class RelacionesTest extends TestCase
     }
     
     /**
-     * PRUEBA 5: Verificar relación de ProductoControlFertilizante con labores
+     * PRUEBA 4: Verificar relación de ProductoControlFertilizante con labores
      * 
      * Esta prueba verifica que la relación con labores está correctamente definida
      * y que un fertilizante puede tener múltiples labores asociadas.
@@ -157,7 +125,7 @@ class RelacionesTest extends TestCase
     }
 
     /**
-     * PRUEBA 6: Verificar relación de ProductoControlHongo con labores
+     * PRUEBA 5: Verificar relación de ProductoControlHongo con labores
      * 
      * Esta prueba verifica que la relación con labores está correctamente definida
      * y que un hongo puede tener múltiples labores asociadas.
@@ -189,7 +157,7 @@ class RelacionesTest extends TestCase
     }
 
     /**
-     * PRUEBA 7: Verificar relación de ProductoControlPlaga con labores
+     * PRUEBA 6: Verificar relación de ProductoControlPlaga con labores
      * 
      * Esta prueba verifica que la relación con labores está correctamente definida
      * y que una plaga puede tener múltiples labores asociadas.

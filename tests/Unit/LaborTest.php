@@ -15,41 +15,47 @@ class LaborTest extends TestCase
     /**
      * PRUEBA 1: Verificar creación de labor con datos reales del sistema
      * 
-     * 🎯 OBJETIVO:
-     * Validar que podemos crear una labor usando la misma estructura de datos
-     * que se muestra en la interfaz (con vivero, producto control y fechas reales).
-     * Crea una instancia de Labor sin guardar en BD
+     * 🎯 OBJETIVO: Validar la creación correcta de una labor con sus relaciones
      * 
-     * 📊 DATOS DEL SISTEMA (basado en la interfaz):
-     * - Viveros: VIV-rb075 (Helecho), VIV-zo328 (Orquídea), VIV-bf953 (Pimiento)
-     * - Productos: Hongo, Plaga, Fertilizante
-     * - Fechas: 16/03/2026, 21/02/2026, 23/01/2026
+     * 📊 DATOS DE EJEMPLO (basados en la interfaz):
+     * - Vivero: VIV-rb075 (Helecho)
+     * - Producto: Fungicida Premium (tipo hongo)
+     * - Fecha: 16/03/2026
+     * - Descripción: Aplicación de fungicida en cultivo de café
      */
     public function test_puede_crear_labor_como_en_la_interfaz()
     {
-        // Crear un vivero similar a los que aparecen en la interfaz
+        // Arrange (Preparar)
         $vivero = Vivero::factory()->create([
             'codigo' => 'VIV-test-001',
-            'tipo_cultivo' => 'Café'
+            'nombre' => 'Helecho'
         ]);
 
-        // Crear un producto de control como los que se ven en la lista
         $producto = ProductoControl::factory()->create([
             'nombre_producto' => 'Fungicida Premium',
             'tipo' => 'hongo'
         ]);
 
-        // Crear labor con datos similares a la interfaz
+        // Act (Ejecutar)
         $labor = new Labor([
-            'fecha' => '2026-03-16', // Fecha similar a "16/03/2026" de la interfaz
-            'descripcion' => 'Aplicación de fungicida en cultivo de café', // Similar a las descripciones mostradas
+            'fecha' => '2026-03-16',
+            'descripcion' => 'Aplicación de fungicida en cultivo de café',
             'vivero_id' => $vivero->id,
             'producto_control_id' => $producto->id
         ]);
 
+        // Assert (Verificar)
         $this->assertInstanceOf(Labor::class, $labor);
+        
+        // Verificar fecha
         $this->assertEquals('2026-03-16', $labor->fecha->format('Y-m-d'));
+        $this->assertInstanceOf(\Illuminate\Support\Carbon::class, $labor->fecha);
+        
+        // Verificar descripción
+        $this->assertEquals('Aplicación de fungicida en cultivo de café', $labor->descripcion);
         $this->assertStringContainsString('fungicida', strtolower($labor->descripcion));
+        
+        // Verificar relaciones
         $this->assertEquals($vivero->id, $labor->vivero_id);
         $this->assertEquals($producto->id, $labor->producto_control_id);
     }

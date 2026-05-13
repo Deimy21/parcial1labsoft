@@ -1,67 +1,84 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
+<div class="container" style="max-width:700px;">
+
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Editar Vivero</h1>
+        <h2>Editar Vivero</h2>
+
         <a href="{{ route('viveros.index') }}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Volver
+            Volver
         </a>
     </div>
 
-    <div class="card">
+    <div class="card shadow-sm">
         <div class="card-body">
-            <form action="{{ route('viveros.update', $vivero) }}" method="POST">
+
+            <form method="POST" action="{{ route('viveros.update', $vivero) }}">
                 @csrf
                 @method('PUT')
-                
-                <div class="mb-3">
-                    <label for="finca_id" class="form-label">Finca *</label>
-                    <select name="finca_id" id="finca_id" class="form-select @error('finca_id') is-invalid @enderror" required>
-                        <option value="">Seleccione una finca</option>
-                        @foreach($fincas as $finca)
-                            <option value="{{ $finca->id }}" {{ (old('finca_id') ?? $vivero->finca_id) == $finca->id ? 'selected' : '' }}>
-                                {{ $finca->numero_catastro }} - {{ $finca->municipio }} ({{ $finca->productor->nombre }} {{ $finca->productor->apellido }})
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('finca_id')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
 
+                {{-- CÓDIGO --}}
                 <div class="mb-3">
-                    <label for="codigo" class="form-label">Código del Vivero *</label>
-                    <input type="text" 
-                           class="form-control @error('codigo') is-invalid @enderror" 
-                           id="codigo" 
-                           name="codigo" 
-                           value="{{ old('codigo', $vivero->codigo) }}"
+                    <label class="form-label fw-bold">Código del Vivero</label>
+                    <input type="text"
+                           name="codigo"
+                           class="form-control border border-dark"
+                           style="background:#fff; color:#000; padding:10px;"
+                           value="{{ $vivero->codigo }}"
                            required>
-                    <small class="text-muted">Código único asignado por el productor</small>
-                    @error('codigo')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
                 </div>
 
+                {{-- NOMBRE --}}
                 <div class="mb-3">
-                    <label for="tipo_cultivo" class="form-label">Tipo de Cultivo *</label>
-                    <input type="text" 
-                           class="form-control @error('tipo_cultivo') is-invalid @enderror" 
-                           id="tipo_cultivo" 
-                           name="tipo_cultivo" 
-                           value="{{ old('tipo_cultivo', $vivero->tipo_cultivo) }}"
+                    <label class="form-label fw-bold">Nombre del Vivero</label>
+                    <input type="text"
+                           name="nombre"
+                           class="form-control border border-dark"
+                           style="background:#fff; color:#000; padding:10px;"
+                           value="{{ $vivero->nombre }}"
                            required>
-                    @error('tipo_cultivo')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
                 </div>
 
-                <div class="text-end">
-                    <button type="submit" class="btn btn-primary">Actualizar Vivero</button>
+                {{-- DEPARTAMENTO --}}
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Departamento</label>
+                    <input type="text"
+                           name="departamento"
+                           class="form-control border border-dark"
+                           style="background:#fff; color:#000; padding:10px;"
+                           value="{{ $vivero->departamento }}"
+                           required>
                 </div>
+
+                {{-- MUNICIPIO --}}
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Municipio</label>
+                    <input type="text"
+                           name="municipio"
+                           class="form-control border border-dark"
+                           style="background:#fff; color:#000; padding:10px;"
+                           value="{{ $vivero->municipio }}"
+                           required>
+                </div>
+
+                {{-- BOTONES --}}
+                <div class="d-flex justify-content-end gap-2 mt-4">
+
+                    <a href="{{ route('viveros.index') }}" class="btn btn-light border">
+                        Cancelar
+                    </a>
+
+                    <button type="submit" class="btn btn-primary">
+                        Guardar Cambios
+                    </button>
+
+                </div>
+
             </form>
+
         </div>
     </div>
+
 </div>
 @endsection

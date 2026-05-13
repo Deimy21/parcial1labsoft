@@ -21,8 +21,10 @@ class LaborWebController extends Controller
 
     public function create()
     {
-        $viveros         = Vivero::with('finca')->orderBy('codigo')->get();
-        $productosControl = ProductoControl::orderBy('tipo')->orderBy('nombre_producto')->get();
+        $viveros = Vivero::orderBy('codigo')->get();
+        $productosControl = ProductoControl::orderBy('tipo')
+            ->orderBy('nombre_producto')
+            ->get();
 
         return view('labores.create', compact('viveros', 'productosControl'));
     }
@@ -43,7 +45,7 @@ class LaborWebController extends Controller
 
     public function edit(Labor $labor)
     {
-        $viveros          = Vivero::with('finca')->orderBy('codigo')->get();
+        $viveros = Vivero::with('productor')->orderBy('codigo')->get();
         $productosControl = ProductoControl::orderBy('tipo')->orderBy('nombre_producto')->get();
 
         return view('labores.edit', compact('labor', 'viveros', 'productosControl'));

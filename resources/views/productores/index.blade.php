@@ -5,10 +5,13 @@
 @section('topbar-subtitle', 'Lista')
 
 @section('topbar-actions')
-    <a href="{{ route('productores.create') }}" class="btn btn-primary">
-        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-        Nuevo Productor
-    </a>
+
+    @if(auth()->user()->rol == 'administrador')
+        <a href="{{ route('productores.create') }}" class="btn btn-primary">
+            Crear Productor
+        </a>
+    @endif
+
 @endsection
 
 @section('content')
@@ -56,7 +59,6 @@
                     <th>Productor</th>
                     <th>Documento</th>
                     <th>Contacto</th>
-                    <th>Fincas</th>
                     <th style="text-align:right;">Acciones</th>
                 </tr>
             </thead>
@@ -77,24 +79,22 @@
                     </td>
                     <td style="color:var(--text-muted); font-size:.85rem;">{{ $p->telefono }}</td>
                     <td>
-                        <span style="font-weight:600; color:var(--green-deep);">{{ $p->fincas_count }}</span>
-                        <span style="font-size:.8rem; color:var(--text-muted);"> finca(s)</span>
-                    </td>
-                    <td>
                         <div style="display:flex; gap:6px; justify-content:flex-end;">
                             <a href="{{ route('productores.show', $p) }}" class="btn btn-secondary btn-sm">
                                 <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                                 Ver
                             </a>
-                            <a href="{{ route('productores.edit', $p) }}" class="btn btn-amber btn-sm">
-                                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                Editar
-                            </a>
-                            <button onclick="confirmDelete('{{ route('productores.destroy', $p) }}', '¿Eliminar a {{ $p->nombre }} {{ $p->apellido }}? Se eliminarán también sus fincas y viveros.')"
-                                class="btn btn-danger btn-sm">
-                                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3,6 5,6 21,6"/><path d="M19,6l-1,14a2,2,0,01-2,2H8a2,2,0,01-2-2L5,6"/></svg>
-                                Eliminar
-                            </button>
+                            @if(auth()->user()->rol == 'administrador')
+                                <a href="{{ route('productores.edit', $p) }}" class="btn btn-amber btn-sm">
+                                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                    Editar
+                                </a>
+                                <button onclick="confirmDelete('{{ route('productores.destroy', $p) }}', '¿Eliminar a {{ $p->nombre }} {{ $p->apellido }}? Se eliminarán también susviveros.')"
+                                    class="btn btn-danger btn-sm">
+                                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3,6 5,6 21,6"/><path d="M19,6l-1,14a2,2,0,01-2,2H8a2,2,0,01-2-2L5,6"/></svg>
+                                    Eliminar
+                                </button>
+                            @endif
                         </div>
                     </td>
                 </tr>

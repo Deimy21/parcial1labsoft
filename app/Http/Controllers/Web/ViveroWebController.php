@@ -3,32 +3,34 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-use App\Models\Finca;
 use App\Models\Vivero;
 use Illuminate\Http\Request;
+use App\Models\Productor;
+
 
 class ViveroWebController extends Controller
 {
     public function index()
     {
-        $viveros = Vivero::with('finca.productor')->paginate(10);
+        $viveros = Vivero::with('productor')->paginate(10);
         return view('viveros.index', compact('viveros'));
     }
 
     public function create()
     {
-        $fincas = Finca::with('productor')->get();
-        return view('viveros.create', compact('fincas'));
+        $productores = Productor::all();
+
+        return view('viveros.create', compact('productores'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'finca_id' => 'required|exists:fincas,id',
-            'codigo' => 'required|string|max:255|unique:viveros,codigo,NULL,id,finca_id,' . $request->finca_id,
-            'tipo_cultivo' => 'required|string|max:255'
-        ], [
-            'codigo.unique' => 'Ya existe un vivero con este código en la finca seleccionada.'
+            'codigo' => 'required|string|max:255|unique:viveros,codigo',
+            'nombre' => 'required|string|max:255',
+            'departamento' => 'required|string|max:255',
+            'municipio' => 'required|string|max:255',
+            'productor_id' => 'required|exists:productores,id',
         ]);
 
         Vivero::create($validated);
@@ -39,24 +41,23 @@ class ViveroWebController extends Controller
 
     public function show(Vivero $vivero)
     {
-        $vivero->load('finca.productor', 'labores.productoControl');
         return view('viveros.show', compact('vivero'));
     }
 
     public function edit(Vivero $vivero)
     {
-        $fincas = Finca::with('productor')->get();
-        return view('viveros.edit', compact('vivero', 'fincas'));
+        $productores = Productor::all();
+        return view('viveros.edit', compact('vivero', 'productores'));
     }
 
     public function update(Request $request, Vivero $vivero)
     {
         $validated = $request->validate([
-            'finca_id' => 'required|exists:fincas,id',
-            'codigo' => 'required|string|max:255|unique:viveros,codigo,' . $vivero->id . ',id,finca_id,' . $request->finca_id,
-            'tipo_cultivo' => 'required|string|max:255'
-        ], [
-            'codigo.unique' => 'Ya existe un vivero con este código en la finca seleccionada.'
+            
+            'codigo' => 'required|string|max:255|unique:viveros,codigo,' . $vivero->id,
+            'nombre' => 'required|string|max:255',
+            'departamento' => 'required|string|max:255',
+            'municipio' => 'required|string|max:255',
         ]);
 
         $vivero->update($validated);
